@@ -1,13 +1,14 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
-import {config as dotEnvConfig} from 'dotenv';
+import { config as envConfig } from 'dotenv';
 
-dotEnvConfig();
+envConfig();
 
 const config = {
   name: 'Mongo',
-  url: process.env.MONGO_URL,
-  useNewUrlParser: true,
+  connector: 'mongodb',
+  url: `${process.env.MONGO_URL}`,
+  useNewUrlParser: true
 };
 
 @lifeCycleObserver('datasource')
