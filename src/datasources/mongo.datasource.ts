@@ -1,14 +1,15 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
+import { config as envConfig } from 'dotenv';
+
+envConfig();
 
 const config = {
-  name: 'atlas',
+  name: 'Mongo',
   connector: 'mongodb',
-  port: 27017,
-  url: `mongodb+srv://grupo3:grupo3@dssd-cluster.jqzshdn.mongodb.net/grupo3?retryWrites=true&w=majority`,
-  useNewUrlParser: true,
+  url: `${process.env.MONGO_URL}`,
+  useNewUrlParser: true
 };
-
 
 @lifeCycleObserver('datasource')
 export class MongoDataSource extends juggler.DataSource
