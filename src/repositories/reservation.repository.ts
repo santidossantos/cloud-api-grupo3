@@ -8,9 +8,7 @@ export class ReservationRepository extends DefaultCrudRepository<
   typeof Reservation.prototype.id,
   ReservationRelations
 > {
-  constructor(
-    @inject('datasources.Mongo') dataSource: MongoDataSource,
-  ) {
+  constructor(@inject('datasources.Mongo') dataSource: MongoDataSource) {
     super(Reservation, dataSource);
   }
 }

@@ -21,7 +21,6 @@ export class Material extends Entity {
   })
   unit: string;
 
-
   constructor(data?: Partial<Material>) {
     super(data);
   }

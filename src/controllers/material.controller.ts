@@ -23,7 +23,7 @@ import {MaterialRepository} from '../repositories';
 export class MaterialController {
   constructor(
     @repository(MaterialRepository)
-    public materialRepository : MaterialRepository,
+    public materialRepository: MaterialRepository,
   ) {}
 
   @post('/materials')
@@ -52,9 +52,7 @@ export class MaterialController {
     description: 'Material model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Material) where?: Where<Material>,
-  ): Promise<Count> {
+  async count(@param.where(Material) where?: Where<Material>): Promise<Count> {
     return this.materialRepository.count(where);
   }
 
@@ -106,7 +104,8 @@ export class MaterialController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Material, {exclude: 'where'}) filter?: FilterExcludingWhere<Material>
+    @param.filter(Material, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Material>,
   ): Promise<Material> {
     return this.materialRepository.findById(id, filter);
   }

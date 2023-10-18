@@ -23,7 +23,7 @@ import {ProviderRepository} from '../repositories';
 export class ProviderController {
   constructor(
     @repository(ProviderRepository)
-    public providerRepository : ProviderRepository,
+    public providerRepository: ProviderRepository,
   ) {}
 
   @post('/providers')
@@ -52,9 +52,7 @@ export class ProviderController {
     description: 'Provider model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Provider) where?: Where<Provider>,
-  ): Promise<Count> {
+  async count(@param.where(Provider) where?: Where<Provider>): Promise<Count> {
     return this.providerRepository.count(where);
   }
 
@@ -106,7 +104,8 @@ export class ProviderController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Provider, {exclude: 'where'}) filter?: FilterExcludingWhere<Provider>
+    @param.filter(Provider, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Provider>,
   ): Promise<Provider> {
     return this.providerRepository.findById(id, filter);
   }

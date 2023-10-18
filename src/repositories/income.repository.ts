@@ -8,9 +8,7 @@ export class IncomeRepository extends DefaultCrudRepository<
   typeof Income.prototype.id,
   IncomeRelations
 > {
-  constructor(
-    @inject('datasources.Mongo') dataSource: MongoDataSource,
-  ) {
+  constructor(@inject('datasources.Mongo') dataSource: MongoDataSource) {
     super(Income, dataSource);
   }
 }

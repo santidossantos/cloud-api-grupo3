@@ -8,9 +8,7 @@ export class MaterialRepository extends DefaultCrudRepository<
   typeof Material.prototype.id,
   MaterialRelations
 > {
-  constructor(
-    @inject('datasources.Mongo') dataSource: MongoDataSource,
-  ) {
+  constructor(@inject('datasources.Mongo') dataSource: MongoDataSource) {
     super(Material, dataSource);
   }
 }
