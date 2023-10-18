@@ -16,6 +16,12 @@ export class Income extends Entity {
   date: string;
 
   @property({
+    type: 'string',
+    default: () => new Date().toISOString(),
+  })
+  createdAt: string;
+
+  @property({
     type: 'number',
     required: true,
   })
@@ -24,12 +30,12 @@ export class Income extends Entity {
   @property({
     type: 'string',
   })
-  providerId?: string;
+  providerId: string;
 
   @property({
     type: 'string',
   })
-  materialId?: string;
+  materialId: string;
 
   constructor(data?: Partial<Income>) {
     super(data);
