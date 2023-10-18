@@ -29,11 +29,13 @@ export class Income extends Entity {
 
   @property({
     type: 'string',
+    required: true,
   })
   providerId: string;
 
   @property({
     type: 'string',
+    required: true,
   })
   materialId: string;
 

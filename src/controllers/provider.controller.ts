@@ -146,4 +146,44 @@ export class ProviderController {
   async deleteById(@param.path.string('id') id: string): Promise<void> {
     await this.providerRepository.deleteById(id);
   }
+
+  @post('/providers/find-by-material-and-date')
+  @response(200, {
+    description: 'Array of Provider model instances',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'array',
+          items: getModelSchemaRef(Provider, {includeRelations: true}),
+        },
+      },
+    },
+  })
+  async findByMaterialAndDate(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              materialId: {type: 'string'},
+              quantity: {type: 'number'},
+              date: {type: 'string'},
+            },
+          },
+        },
+      },
+    })
+    params: {
+      materialId: string;
+      quantity: number;
+      date: string;
+    },
+  ): Promise<Provider[]> {
+    return this.providerRepository.findByMaterialAndDate({
+      materialId: params.materialId,
+      quantity: params.quantity,
+      date: new Date(params.date),
+    });
+  }
 }

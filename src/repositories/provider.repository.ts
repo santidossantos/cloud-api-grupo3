@@ -61,4 +61,39 @@ export class ProviderRepository extends DefaultCrudRepository<
       this.reservations.inclusionResolver,
     );
   }
+
+  public async findByMaterialAndDate(params: {
+    materialId: string;
+    quantity: number;
+    date: Date;
+  }): Promise<Provider[]> {
+    const {materialId, quantity, date} = params;
+    let availableProviders = [];
+
+    const providers = await this.find();
+    for (const provider of providers) {
+      const quantityFromIncomes = await (await this.incomeRepositoryGetter())
+        .execute(
+          `SELECT SUM(quantity) FROM income WHERE materialId = '${materialId}' AND providerId = '${provider.id}' AND date <= '${date}'`,
+        )
+        .then(value => value[0].sum);
+      const quantityFromReservations = await (
+        await this.reservationRepositoryGetter()
+      )
+        .execute(
+          `SELECT SUM(quantity) FROM reservation WHERE materialId = '${materialId}' AND providerId = '${provider.id}' AND date <= '${date}'`,
+        )
+        .then(value => value[0].sum);
+
+      console.log('quantityFromIncomes: ', quantityFromIncomes);
+      console.log('quantityFromReservations: ', quantityFromReservations);
+      console.log('quantity: ', quantity);
+      console.log(quantityFromIncomes - quantityFromReservations);
+
+      if (quantityFromIncomes - quantityFromReservations >= quantity)
+        availableProviders.push(provider);
+    }
+
+    return availableProviders;
+  }
 }
