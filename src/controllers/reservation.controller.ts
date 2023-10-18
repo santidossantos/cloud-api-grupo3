@@ -23,7 +23,7 @@ import {ReservationRepository} from '../repositories';
 export class ReservationController {
   constructor(
     @repository(ReservationRepository)
-    public reservationRepository : ReservationRepository,
+    public reservationRepository: ReservationRepository,
   ) {}
 
   @post('/reservations')
@@ -37,7 +37,7 @@ export class ReservationController {
         'application/json': {
           schema: getModelSchemaRef(Reservation, {
             title: 'NewReservation',
-            exclude: ['id'],
+            exclude: ['id', 'createdAt'],
           }),
         },
       },
@@ -76,7 +76,7 @@ export class ReservationController {
     return this.reservationRepository.find(filter);
   }
 
-  @patch('/reservations')
+  /*@patch('/reservations')
   @response(200, {
     description: 'Reservation PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -93,7 +93,7 @@ export class ReservationController {
     @param.where(Reservation) where?: Where<Reservation>,
   ): Promise<Count> {
     return this.reservationRepository.updateAll(reservation, where);
-  }
+  }*/
 
   @get('/reservations/{id}')
   @response(200, {
@@ -106,12 +106,13 @@ export class ReservationController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Reservation, {exclude: 'where'}) filter?: FilterExcludingWhere<Reservation>
+    @param.filter(Reservation, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Reservation>,
   ): Promise<Reservation> {
     return this.reservationRepository.findById(id, filter);
   }
 
-  @patch('/reservations/{id}')
+  /*@patch('/reservations/{id}')
   @response(204, {
     description: 'Reservation PATCH success',
   })
@@ -138,7 +139,7 @@ export class ReservationController {
     @requestBody() reservation: Reservation,
   ): Promise<void> {
     await this.reservationRepository.replaceById(id, reservation);
-  }
+  }*/
 
   @del('/reservations/{id}')
   @response(204, {

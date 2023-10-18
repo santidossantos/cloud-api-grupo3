@@ -23,7 +23,7 @@ import {IncomeRepository} from '../repositories';
 export class IncomeController {
   constructor(
     @repository(IncomeRepository)
-    public incomeRepository : IncomeRepository,
+    public incomeRepository: IncomeRepository,
   ) {}
 
   @post('/incomes')
@@ -37,7 +37,7 @@ export class IncomeController {
         'application/json': {
           schema: getModelSchemaRef(Income, {
             title: 'NewIncome',
-            exclude: ['id'],
+            exclude: ['id', 'createdAt'],
           }),
         },
       },
@@ -52,9 +52,7 @@ export class IncomeController {
     description: 'Income model count',
     content: {'application/json': {schema: CountSchema}},
   })
-  async count(
-    @param.where(Income) where?: Where<Income>,
-  ): Promise<Count> {
+  async count(@param.where(Income) where?: Where<Income>): Promise<Count> {
     return this.incomeRepository.count(where);
   }
 
@@ -70,13 +68,11 @@ export class IncomeController {
       },
     },
   })
-  async find(
-    @param.filter(Income) filter?: Filter<Income>,
-  ): Promise<Income[]> {
+  async find(@param.filter(Income) filter?: Filter<Income>): Promise<Income[]> {
     return this.incomeRepository.find(filter);
   }
 
-  @patch('/incomes')
+  /*@patch('/incomes')
   @response(200, {
     description: 'Income PATCH success count',
     content: {'application/json': {schema: CountSchema}},
@@ -93,7 +89,7 @@ export class IncomeController {
     @param.where(Income) where?: Where<Income>,
   ): Promise<Count> {
     return this.incomeRepository.updateAll(income, where);
-  }
+  }*/
 
   @get('/incomes/{id}')
   @response(200, {
@@ -106,12 +102,13 @@ export class IncomeController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(Income, {exclude: 'where'}) filter?: FilterExcludingWhere<Income>
+    @param.filter(Income, {exclude: 'where'})
+    filter?: FilterExcludingWhere<Income>,
   ): Promise<Income> {
     return this.incomeRepository.findById(id, filter);
   }
 
-  @patch('/incomes/{id}')
+  /*@patch('/incomes/{id}')
   @response(204, {
     description: 'Income PATCH success',
   })
@@ -138,7 +135,7 @@ export class IncomeController {
     @requestBody() income: Income,
   ): Promise<void> {
     await this.incomeRepository.replaceById(id, income);
-  }
+  }*/
 
   @del('/incomes/{id}')
   @response(204, {
