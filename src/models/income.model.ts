@@ -11,7 +11,7 @@ export class Income extends Entity {
 
   @property({
     type: 'string',
-    required: true,
+    default: () => new Date().toISOString(),
   })
   date: string;
 
