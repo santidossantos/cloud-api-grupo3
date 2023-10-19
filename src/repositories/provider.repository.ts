@@ -65,62 +65,41 @@ export class ProviderRepository extends DefaultCrudRepository<
   public async findByMaterialAndDate(params: {
     materialId: string;
     quantity: number;
-    date: Date;
+    date: string;
   }): Promise<Provider[]> {
     const {materialId, quantity, date} = params;
-    console.log('params:', params);
     let availableProviders: any[] = [];
-
-    const incomes = await (await this.incomeRepositoryGetter()).find({});
-    console.log('incomes:', incomes);
 
     const providers = await this.find();
     for (const provider of providers) {
+      const $match = {
+        materialId: materialId,
+        providerId: provider.id,
+        date: {$lte: date},
+      };
+      const $group = {_id: null, quantity: {$sum: '$quantity'}};
+
       const quantityFromIncomes =
         (await (
-          await (
-            await this.incomeRepositoryGetter()
-          ).dataSource.connector
+          await (await this.incomeRepositoryGetter()).dataSource.connector
             ?.collection('Income')
-            .aggregate([
-              {
-                $match: {
-                  //materialId: materialId,
-                  //providerId: provider.id,
-                  //date: {$lte: date},
-                },
-              },
-              {$group: {_id: null, quantity: {$sum: '$quantity'}}},
-            ])
+            .aggregate([{$match}, {$group}])
             .toArray()
         ).at(0)?.quantity) || 0;
 
       const quantityFromReservations =
         (await (
-          await (
-            await this.reservationRepositoryGetter()
-          ).dataSource.connector
+          await (await this.reservationRepositoryGetter()).dataSource.connector
             ?.collection('Reservation')
-            .aggregate([
-              {
-                $match: {
-                  //materialId: materialId,
-                  //providerId: provider.id,
-                  //date: {$lte: date},
-                },
-              },
-              {$group: {_id: null, quantity: {$sum: '$quantity'}}},
-            ])
+            .aggregate([{$match}, {$group}])
             .toArray()
         ).at(0)?.quantity) || 0;
 
-      console.log('quantityFromIncomes:', quantityFromIncomes);
-      console.log('quantityFromReservations:', quantityFromReservations);
-      console.log('quantity:', quantity);
-      console.log(quantityFromIncomes - quantityFromReservations);
-
       if (quantityFromIncomes - quantityFromReservations >= quantity)
-        availableProviders.push(provider);
+        availableProviders.push({
+          ...provider,
+          availableQuantity: quantityFromIncomes - quantityFromReservations,
+        });
     }
 
     return availableProviders;

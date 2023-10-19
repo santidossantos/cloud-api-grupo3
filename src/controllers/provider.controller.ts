@@ -154,7 +154,7 @@ export class ProviderController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(Provider, {includeRelations: true}),
+          items: getModelSchemaRef(Provider, {includeRelations: false}),
         },
       },
     },
@@ -183,7 +183,7 @@ export class ProviderController {
     return this.providerRepository.findByMaterialAndDate({
       materialId: params.materialId,
       quantity: params.quantity,
-      date: new Date(params.date),
+      date: params.date,
     });
   }
 }

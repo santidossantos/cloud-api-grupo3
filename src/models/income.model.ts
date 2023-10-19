@@ -1,6 +1,6 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model()
+@model({settings: {strictObjectIDCoercion: true}})
 export class Income extends Entity {
   @property({
     type: 'string',
