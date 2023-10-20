@@ -18,12 +18,14 @@ import {
   response,
 } from '@loopback/rest';
 import {Reservation} from '../models';
-import {ReservationRepository} from '../repositories';
+import {ProviderRepository, ReservationRepository} from '../repositories';
 
 export class ReservationController {
   constructor(
     @repository(ReservationRepository)
     public reservationRepository: ReservationRepository,
+    @repository(ProviderRepository)
+    public providerRepository: ProviderRepository,
   ) {}
 
   @post('/reservations')
@@ -44,6 +46,14 @@ export class ReservationController {
     })
     reservation: Omit<Reservation, 'id'>,
   ): Promise<Reservation> {
+    if (reservation.date && new Date(reservation.date) < new Date())
+      throw new Error('Date cannot be in the past');
+
+    const availableProviders =
+      await this.providerRepository.findByMaterialAndDate(reservation);
+    if (!availableProviders.some(p => p.id === reservation.providerId))
+      throw new Error('The provider is not available for this date');
+
     return this.reservationRepository.create(reservation);
   }
 

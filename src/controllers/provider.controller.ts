@@ -19,6 +19,7 @@ import {
 } from '@loopback/rest';
 import {Provider} from '../models';
 import {ProviderRepository} from '../repositories';
+import dayjs from 'dayjs';
 
 export class ProviderController {
   constructor(
@@ -180,10 +181,8 @@ export class ProviderController {
       date: string;
     },
   ): Promise<Provider[]> {
-    return this.providerRepository.findByMaterialAndDate({
-      materialId: params.materialId,
-      quantity: params.quantity,
-      date: params.date,
-    });
+    if (!params.date || !dayjs(params.date).isValid())
+      throw new Error('Invalid date');
+    return this.providerRepository.findByMaterialAndDate(params);
   }
 }
