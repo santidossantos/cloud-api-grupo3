@@ -33,6 +33,7 @@
     "openapi-spec": "node ./dist/openapi-spec",
     "prestart": "npm run rebuild",
     "start": "node -r source-map-support/register .",
+    "start:watch": "tsc-watch --onSuccess \"node -r source-map-support/register .\"",
     "clean": "lb-clean dist *.tsbuildinfo .eslintcache",
     "rebuild": "npm run clean && npm run build"
   },
@@ -69,6 +70,7 @@
     "@types/node": "^16.18.50",
     "eslint": "^8.48.0",
     "source-map-support": "^0.5.21",
+    "tsc-watch": "^6.0.4",
     "typescript": "~5.2.2"
   }
 }

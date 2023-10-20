@@ -1,6 +1,6 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
-import { config as envConfig } from 'dotenv';
+import {config as envConfig} from 'dotenv';
 
 envConfig();
 
@@ -8,12 +8,14 @@ const config = {
   name: 'Mongo',
   connector: 'mongodb',
   url: `${process.env.MONGO_URL}`,
-  useNewUrlParser: true
+  useNewUrlParser: true,
 };
 
 @lifeCycleObserver('datasource')
-export class MongoDataSource extends juggler.DataSource
-  implements LifeCycleObserver {
+export class MongoDataSource
+  extends juggler.DataSource
+  implements LifeCycleObserver
+{
   static dataSourceName = 'Mongo';
   static readonly defaultConfig = config;
 
