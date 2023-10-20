@@ -20,7 +20,9 @@ import {
 import {Provider} from '../models';
 import {ProviderRepository} from '../repositories';
 import dayjs from 'dayjs';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class ProviderController {
   constructor(
     @repository(ProviderRepository)

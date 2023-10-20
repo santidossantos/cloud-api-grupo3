@@ -19,7 +19,9 @@ import {
 } from '@loopback/rest';
 import {Reservation} from '../models';
 import {ProviderRepository, ReservationRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class ReservationController {
   constructor(
     @repository(ReservationRepository)

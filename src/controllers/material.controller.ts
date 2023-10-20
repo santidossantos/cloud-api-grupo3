@@ -19,7 +19,9 @@ import {
 } from '@loopback/rest';
 import {Material} from '../models';
 import {MaterialRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class MaterialController {
   constructor(
     @repository(MaterialRepository)

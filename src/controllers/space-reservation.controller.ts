@@ -17,21 +17,25 @@ import {
 } from '@loopback/rest';
 import {SpaceReservation} from '../models';
 import {SpaceReservationRepository} from '../repositories';
-import { authenticate } from '@loopback/authentication';
+import {authenticate} from '@loopback/authentication';
 
 @authenticate('jwt')
 export class SpaceReservationController {
   constructor(
     @repository(SpaceReservationRepository)
-    public spaceReservationRepository : SpaceReservationRepository,
+    public spaceReservationRepository: SpaceReservationRepository,
   ) {}
 
   @post('/space-reservations')
   @response(200, {
     description: 'SpaceReservation model instance',
-    content: {'application/json': {schema:  {
-      items: getModelSchemaRef(SpaceReservation),
-    },}},
+    content: {
+      'application/json': {
+        schema: {
+          items: getModelSchemaRef(SpaceReservation),
+        },
+      },
+    },
   })
   async create(
     @requestBody({
@@ -46,29 +50,42 @@ export class SpaceReservationController {
     })
     spaceReservation: Omit<SpaceReservation, 'id'>,
   ): Promise<SpaceReservation> {
-    
-    if (spaceReservation.dateFrom && new Date(spaceReservation.dateFrom) < new Date()) {
-      throw new Error('Neither dateFrom or dateTo can be in the past'); }
-    if (spaceReservation.dateFrom && new Date(spaceReservation.dateTo) < new Date()) {
-      throw new Error('Neither dateFrom or dateTo can be in the past');}
-    if (! spaceReservation.manufacturingSpaceId){
-      throw new Error('Complete manufacturingSpaceId');} 
-    if (new Date(spaceReservation.dateTo) < new Date(spaceReservation.dateFrom)) {
-      throw new Error('dateTo must be after dateFrom') }
+    if (
+      spaceReservation.dateFrom &&
+      new Date(spaceReservation.dateFrom) < new Date()
+    ) {
+      throw new Error('Neither dateFrom or dateTo can be in the past');
+    }
+    if (
+      spaceReservation.dateFrom &&
+      new Date(spaceReservation.dateTo) < new Date()
+    ) {
+      throw new Error('Neither dateFrom or dateTo can be in the past');
+    }
+    if (!spaceReservation.manufacturingSpaceId) {
+      throw new Error('Complete manufacturingSpaceId');
+    }
+    if (
+      new Date(spaceReservation.dateTo) < new Date(spaceReservation.dateFrom)
+    ) {
+      throw new Error('dateTo must be after dateFrom');
+    }
 
     const params = {
       manufacturingSpaceId: spaceReservation.manufacturingSpaceId,
       dateFrom: spaceReservation.dateFrom,
       dateTo: spaceReservation.dateTo,
-    }
+    };
 
-    const available = this.spaceReservationRepository.findBySpaceAndDates(params);
+    const available =
+      this.spaceReservationRepository.findBySpaceAndDates(params);
 
     if ((await available).length > 0) {
-      throw new Error('Could not create reservation. Manufacturing space will be occupied');
+      throw new Error(
+        'Could not create reservation. Manufacturing space will be occupied',
+      );
     }
     return this.spaceReservationRepository.create(spaceReservation);
- 
   }
 
   @get('/space-reservations/count')
@@ -82,7 +99,6 @@ export class SpaceReservationController {
     return this.spaceReservationRepository.count(where);
   }
 
-  @authenticate('jwt')
   @get('/space-reservations')
   @response(200, {
     description: 'Array of SpaceReservation model instances',
@@ -112,7 +128,8 @@ export class SpaceReservationController {
   })
   async findById(
     @param.path.string('id') id: string,
-    @param.filter(SpaceReservation, {exclude: 'where'}) filter?: FilterExcludingWhere<SpaceReservation>
+    @param.filter(SpaceReservation, {exclude: 'where'})
+    filter?: FilterExcludingWhere<SpaceReservation>,
   ): Promise<SpaceReservation> {
     return this.spaceReservationRepository.findById(id, filter);
   }

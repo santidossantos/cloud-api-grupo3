@@ -19,7 +19,9 @@ import {
 } from '@loopback/rest';
 import {Income} from '../models';
 import {IncomeRepository} from '../repositories';
+import {authenticate} from '@loopback/authentication';
 
+@authenticate('jwt')
 export class IncomeController {
   constructor(
     @repository(IncomeRepository)
