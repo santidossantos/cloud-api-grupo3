@@ -29,6 +29,21 @@ export class SpaceReservationRepository extends DefaultCrudRepository<
     }
     return await this.find(filter);
   }
+
+
+  public async findByDates(params: {
+    dateFrom: string;
+    dateTo: string;
+  }) {
+    const {dateFrom, dateTo} = params;
+    const filter = {where: {
+        or: [
+          { and: [{dateFrom: { lte: dateFrom }},{ dateTo: { gte: dateFrom }}] },
+          { and: [{dateFrom: { lte: dateTo }}, {dateTo: { gte: dateTo }}] },
+        ] }
+    }
+    return await this.find(filter);
+  }
   
 
 }

@@ -19,7 +19,7 @@ import {ManufacturingSpace} from '../models';
 import {ManufacturingSpaceRepository} from '../repositories';
 import { authenticate } from '@loopback/authentication';
 
-@authenticate('jwt')
+//@authenticate('jwt')
 export class ManufacturingSpaceController {
   constructor(
     @repository(ManufacturingSpaceRepository)
@@ -65,7 +65,7 @@ export class ManufacturingSpaceController {
       'application/json': {
         schema: {
           type: 'array',
-          items: getModelSchemaRef(ManufacturingSpace, {includeRelations: true}),
+          items: getModelSchemaRef(ManufacturingSpace, {includeRelations: false}),
         },
       },
     },
@@ -145,7 +145,7 @@ export class ManufacturingSpaceController {
       throw new Error('dateTo must be after dateFrom') }
 
     let manufacturingSpace = await this.manufacturingSpaceRepository.checkAvailability({manufacturingSpaceId: manufacturingSpaceId, dateFrom: dateFrom, dateTo: dateTo});
-    console.log(manufacturingSpace)
+
     if (manufacturingSpace) {
       return { ok: 'true', message: 'Manufacturing space is available on selected dates' }
     }
@@ -154,5 +154,56 @@ export class ManufacturingSpaceController {
     }
   }
 
+  @post('/manufacturing-spaces/get-available-spaces')
+  @response(200, {
+    description: 'List of available spaces',
+    content: {
+      'application/json': {
+        schema: {
+          type:'array',
+          items: getModelSchemaRef(ManufacturingSpace, {includeRelations: true}),
+        },
+      },
+    }
+  })
+  async getAvailableSpaces(
+    @requestBody({
+      content: {
+        'application/json': {
+          schema: {
+            type: 'object',
+            properties: {
+              dateFrom: {type: 'string'},
+              dateTo: {type: 'string'},
+            }
+          }
+        }
+      }
+    })
+    params: {
+      dateFrom: string;
+      dateTo: string;
+    }
+  ) {
+
+    const {dateFrom, dateTo} = params;
+
+    if (dateFrom && new Date(dateFrom) < new Date()) {
+      throw new Error('Neither dateFrom or dateTo can be in the past'); }
+    if (dateFrom && new Date(dateTo) < new Date()) {
+      throw new Error('Neither dateFrom or dateTo can be in the past');}
+    if (new Date(dateTo) < new Date(dateFrom)) {
+      throw new Error('dateTo must be after dateFrom') }
+
+    let manufacturingSpaces = await this.manufacturingSpaceRepository.getAvailableSpaces({dateFrom: dateFrom, dateTo: dateTo});
+
+    if (manufacturingSpaces) {
+      return manufacturingSpaces
+    }
+    else {
+      return [];
+    }
+    
+  }
 
 }

@@ -19,7 +19,7 @@ import {SpaceReservation} from '../models';
 import {SpaceReservationRepository} from '../repositories';
 import { authenticate } from '@loopback/authentication';
 
-@authenticate('jwt')
+//@authenticate('jwt')
 export class SpaceReservationController {
   constructor(
     @repository(SpaceReservationRepository)
